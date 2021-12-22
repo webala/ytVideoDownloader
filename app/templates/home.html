@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Yt video downloader</title>
+
+    <!-- Bootstrap css -->
+    {{ bootstrap.load_css() }}
+
+    <!-- Google fonts -->
+   	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Moo+Lah+Lah&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+	<div class='container'>
+		<h1 style="font-family: 'Moo Lah Lah', cursive;">Online <p class='text-danger'>Youtube</p> Video Downloader</h1>
+		<div>
+			<form action='/' method='post'>
+				<input type='text' name='url' id='url' placeholder='Enter link to video' class="form-control form-control-sm w-50">
+				<button type='submit' class='btn btn-primary btn-sm mt-3' onclick='loadingDisplay("fetching")'>Convert</button>
+				{% if message %}
+					{{message}}
+				{% endif %}
+			</form>
+			<div class='d-none' id='loading_div'>
+				<h3 class='text-info text-sm' id='loading_message'></h3>
+				<div class="spinner-border" role="status" id='loading'>
+				  <span class="sr-only">Loading...</span>
+				</div>
+			</div>
+		</div>
+
+		{% if url %}
+		<div class='mt-4'>
+			<h2 style="font-family: 'Bebas Neue', cursive;">{{url.title}}</h2>
+			<img src="{{url.thumbnail_url}}" alt='Thumbnail' class='img-thumbnail mb-4'  style="width:500px;height:300px;">
+			<form action='/download' method='POST'>
+				<select name='itag' class='form-control form-control-sm w-25'>
+					{% for i in url.streams.filter(progressive=True) %}
+						<option value="{{i.itag}}">{{i.resolution}}</option>
+					{% endfor %}
+				</select>
+				<button type='submit' class='btn btn-primary btn-sm mt-3' onclick='loadingDisplay("downloading")'>Download</button>
+			</form>
+		</div>
+
+		{% endif %}
+	</div>
+
+	<script>
+		const loadingDisplay = (action) => {
+			loader = document.getElementById('loading')
+			loading_div = document.getElementById('loading_div')
+			
+			if (action === "fetching") {
+				loading_div.setAttribute('class', 'mt-4')
+				loader.setAttribute('class', 'spinner-border text-info')
+				
+			}
+			else if (action === 'downloading') {
+				loading_div.setAttribute('class', 'mt-4')
+				loader.setAttribute('class', 'spinner-border text-success')
+				
+				window.location.reload()
+			}
+			
+		}
+		
+	</script>
+  </body>
+</html>
+
+
+
+
